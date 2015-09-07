@@ -100,6 +100,11 @@ angular.module('workspaceApp')
           dateTimeLabelFormats: {
             day: '%e of %b'
           }
+        },
+        yAxis: {
+          title: {
+            text: 'price ($)'
+          }
         }
       });
     }
