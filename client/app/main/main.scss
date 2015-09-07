@@ -1,6 +1,6 @@
-.thing-form {
-    margin: 20px 0;
-}
+// .thing-form {
+//     margin: 20px 0;
+// }
 
 #banner {
     border-bottom: none;
@@ -28,7 +28,45 @@
     margin-top: 70px;
     border-top: 1px solid #E5E5E5;
 }
-
-.navbar-text {
-  margin-left: 15px;
+.symbols {
+    list-style-type: none;
 }
+
+.symbol {
+    padding-top: 1rem;
+    border-radius: 4px;
+    background-color: #a5a5a5;
+    color: white;
+    padding-left: 1rem;
+
+    &:nth-child(7n) {
+        margin-left: 0;
+    }
+}
+
+.symbol-span {
+    width: 55%;
+    display: inline-block;
+}
+
+.close {
+    border-radius: 50%;
+    border-color: #a5a5a5;
+    width: 19px;
+    padding: 0 2px;
+    margin-left: 1em;
+    height: 19px;
+    line-height: 15px;
+    color: white;
+    
+    &:hover,
+    &:active {
+        border-color: #888;
+        background-color: #888;
+        color: white;
+    }
+}
+
+// .navbar-text {
+//   margin-left: 15px;
+// }

@@ -43,7 +43,6 @@ angular.module('workspaceApp')
           pointInterval: 24 * 3600 * 1000 // one day
         };
 
-        // chart.addSeries(data);
         // they're waiting for the data
         deffered.resolve(data);
       }).error(function(err) {
@@ -62,13 +61,11 @@ angular.module('workspaceApp')
       }
       if (ev === 'deleted') {
         createChart();
-        console.log('ev', ev);
-        console.log('name', item.name);
-        // $scope.deleteStock(item.name);
       }
     }
 
     createChart();
+
     $http.get('/api/stocks').success(function(stocks) {
       $scope.stocks = stocks;
       createChart();
@@ -81,12 +78,18 @@ angular.module('workspaceApp')
           renderTo: 'chart',
           type: 'line'
         },
+        credits: {
+          enabled: false,
+        },
         exporting: {
             enabled: false
         },
         series: $scope.stocks,
         legend: {
           enabled: true
+        },
+        title: {
+          text: ''
         },
         xAxis: {
           type: 'datetime',
