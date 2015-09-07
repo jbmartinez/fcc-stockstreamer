@@ -1,23 +1,19 @@
 'use strict';
 
 angular.module('workspaceApp')
-  .controller('MainCtrl', function ($scope, $http, socket) {
+  .controller('MainCtrl', function ($scope, $http, $q, socket) {
     $scope.awesomeThings = [];
-
-    // var symbol = 'YHOO';
-    var startDate = '2015-01-01';
-    var endDate = '2015-09-06';
-    // var query = [
-    //   'https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.historicaldata%20where%20symbol%20=%20%22',
-    //   symbol, 
-    //   '%22%20and%20startDate%20%3D%20%22',
-    //   startDate,
-    //   '%22%20and%20endDate%20%3D%20%22',
-    //   endDate,
-    //   '%22&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback='
-    // ];
-    // query = query.join('');
     
+    $scope.error = '';
+    $scope.symbols = [];
+
+    var deffered = $q.defer();
+    var date = new Date();
+    // gets the date 180 days ago
+    var date2 = new Date(date - 1000 * 60 * 60 * 24 * 180);
+    var startDate = date2.toISOString().slice(0, 10);
+    var endDate = date.toISOString().slice(0, 10);
+
     function performQuery(symbol) {
       var data = [];
       var query = [
@@ -36,35 +32,28 @@ angular.module('workspaceApp')
           .map(function(item) {
             return Number(item.Close);
           });
-        console.log(data);
-        chart.addSeries({
+
+        data = {
+          name: symbol,
           data: data,
           pointStart: Date.UTC.apply(Date, startDate.split('-')),
           pointInterval: 24 * 3600 * 1000 // one day
-        });
+        };
+
+        chart.addSeries(data);
+        // they're waiting for the data
+        console.log('data', data);
+        deffered.resolve(data);
       }).error(function(err) {
+        $scope.error = err.description;
         console.error(err);
+        deffered.reject(err);
       });
+
+      // I promise you'll get the data :)
+      return deffered.promise;
     }
 
-    // var data = [];
-    // $http.get(query).success(function(res) {
-    //   data = res.query.results.quote
-    //     .map(function(item) {
-    //       return Number(item.Close);
-    //     });
-    //   console.log(data);
-    //   chart.addSeries({
-    //     data: data,
-    //     pointStart: Date.UTC.apply(Date, startDate.split('-')),
-    //     pointInterval: 24 * 3600 * 1000 // one day
-    //   });
-    // }).error(function(err) {
-    //   console.error(err);
-    // });
-    
-    // var chartContainer = $('#chart');
-    // var chart = chartContainer.highcharts({
     var chart = new Highcharts.Chart({
       chart: {
         renderTo: 'chart',
@@ -73,13 +62,6 @@ angular.module('workspaceApp')
       legend: {
         enabled: true
       },
-      // series: [{
-      //   // data:  [100, 112, 105, 110],
-      //   data: data.splice(5,100),
-      //   // pointStart: Date.UTC(2010, 0, 1),
-      //   pointStart: Date.UTC.apply(Date, startDate.split('-')),
-      //   pointInterval: 24 * 3600 * 1000 // one day
-      // }],
       xAxis: {
         type: 'datetime',
         dateTimeLabelFormats: {
@@ -97,13 +79,25 @@ angular.module('workspaceApp')
       if($scope.newThing === '') {
         return;
       }
-      performQuery($scope.newThing);
-      // $http.post('/api/things', { name: $scope.newThing });
-      $scope.newThing = '';
+      var pos = $scope.symbols.indexOf($scope.newThing);
+      if (pos >= 0) {
+        console.log('already exists!');
+        return;
+      }
+      performQuery($scope.newThing.toUpperCase()).then(function(data) {
+        console.log(data);
+        $scope.symbols.push(data.name);
+        $http.post('/api/stocks', data);
+        $scope.newThing = '';
+        deffered = $q.defer();
+      });
     };
 
-    $scope.deleteThing = function(thing) {
-      $http.delete('/api/things/' + thing._id);
+    $scope.deleteStock = function(symbol) {
+      $http.delete('/api/stocks/' + symbol).success(function() {
+        var pos = $scope.symbols.indexOf(symbol);
+        $scope.symbols.splice(pos, 1);
+      });
     };
 
     $scope.$on('$destroy', function () {

@@ -44,7 +44,7 @@ exports.update = function(req, res) {
 
 // Deletes a stock from the DB.
 exports.destroy = function(req, res) {
-  Stock.findById(req.params.id, function (err, stock) {
+  Stock.findOne({name: req.params.id}, function (err, stock) {
     if(err) { return handleError(res, err); }
     if(!stock) { return res.status(404).send('Not Found'); }
     stock.remove(function(err) {

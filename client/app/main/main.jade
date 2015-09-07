@@ -1,4 +1,4 @@
-div(ng-include='"components/navbar/navbar.html"')
+// div(ng-include='"components/navbar/navbar.html"')
 
 header#banner.hero-unit
   .container
@@ -10,11 +10,11 @@ header#banner.hero-unit
   .row
     .col-lg-12
       h1.page-header Features:
-      ul.nav.nav-tabs.nav-stacked.col-md-4.col-lg-4.col-sm-6(ng-repeat='thing in awesomeThings')
+      ul.nav.nav-tabs.nav-stacked.col-md-4.col-lg-4.col-sm-6(ng-repeat='symbol in symbols')
         li
-          a(href='#', tooltip='{{thing.info}}')
-            | {{thing.name}}
-            button.close(type='button', ng-click='deleteThing(thing)') ×
+          a(href='#', tooltip='{{symbol}}')
+            | {{symbol}}
+            button.close(type='button', ng-click='deleteStock(symbol)') ×
   .row
     .col-lg-12
       #chart
@@ -25,6 +25,7 @@ header#banner.hero-unit
       input.form-control(type='text', placeholder='Add a new stock symbol here.', ng-model='newThing')
       span.input-group-btn
         button.btn.btn-primary(type='submit', ng-click='addStock()') Add New
+    p.error(ng-show="error") {{error}}
 
 footer.footer
   .container
