@@ -8,9 +8,9 @@ var StockSchema = new Schema({
     type: String,
     unique: true
   },
-  data: [String],
-  pointStart: String,
-  pointInterval: String,
+  data: [Number],
+  pointStart: Number,
+  pointInterval: Number,
   active: Boolean
 });
 
