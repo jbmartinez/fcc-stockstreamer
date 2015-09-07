@@ -12,6 +12,9 @@ angular.module('workspaceApp')
     var date2 = new Date(date - 1000 * 60 * 60 * 24 * 180);
     var startDate = date2.toISOString().slice(0, 10);
     var endDate = date.toISOString().slice(0, 10);
+    
+    console.log('startDate', startDate);
+    console.log('endDate', endDate);
 
     function buildQuery(symbol) {
       var query = [
@@ -33,14 +36,15 @@ angular.module('workspaceApp')
       $http.get(query).success(function(res) {
         data = res.query.results.quote
           .map(function(item) {
-            return Number(item.Close);
+            var dateArr = item.Date.split('-');
+            // javascipt months are zero-based
+            dateArr[1]--;
+            return [Date.UTC.apply(Date, dateArr), Number(item.Close)];
           });
 
         data = {
           name: symbol,
-          data: data,
-          pointStart: Date.UTC.apply(Date, startDate.split('-')),
-          pointInterval: 24 * 3600 * 1000 // one day
+          data: data.reverse(),
         };
 
         // they're waiting for the data
