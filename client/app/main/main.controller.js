@@ -12,9 +12,6 @@ angular.module('workspaceApp')
     var date2 = new Date(date - 1000 * 60 * 60 * 24 * 180);
     var startDate = date2.toISOString().slice(0, 10);
     var endDate = date.toISOString().slice(0, 10);
-    
-    console.log('startDate', startDate);
-    console.log('endDate', endDate);
 
     function buildQuery(symbol) {
       var query = [
@@ -119,13 +116,10 @@ angular.module('workspaceApp')
       });
 
       if (exists) {
-        console.log('already exists!');
         return;
       }
 
       performQuery($scope.newStock.toUpperCase()).then(function(data) {
-        // $scope.stocks.push(data);
-        console.log($scope.stocks);
         $http.post('/api/stocks', data);
         $scope.newStock = '';
         deffered = $q.defer();

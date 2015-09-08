@@ -20,7 +20,7 @@ header#banner.hero-unit
   form.thing-form
     label Syncs in realtime across clients
     p.input-group.row
-      input.ten.columns.form-control(type='text', placeholder='Add a new stock symbol here.', ng-model='newStock')
+      input#symbol.ten.columns.form-control(type='text', placeholder='Add a new stock symbol here.', ng-model='newStock')
       span.two.columns.input-group-btn
         button.btn.btn-primary(type='submit', ng-click='addStock()') Add New
     p.error(ng-show="error") {{error}}
